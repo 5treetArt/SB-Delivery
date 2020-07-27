@@ -16,6 +16,7 @@
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryVariant">@color/color_primary_dark</item>
         <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorOnPrimarySurface">@color/color_gray_dark</item>
         <item name="colorSecondary">@color/color_accent</item>
         <item name="colorSecondaryVariant">@color/color_accent_dark</item>
         <item name="colorOnSecondary">@android:color/white</item>
@@ -33,6 +34,14 @@
 
     </style>
 
+
+    <style name="CustomRatingBar" parent="Widget.AppCompat.RatingBar">
+        <item name="android:progressDrawable">@drawable/custom_ratingbar</item>
+        <item name="android:minHeight">32dip</item>
+        <item name="android:maxHeight">32dip</item>
+    </style>
+
+<!--
     <style name="ArticleBarsTheme" parent="ThemeOverlay.MaterialComponents.ActionBar">
         <item name="colorPrimary">@color/color_article_bar</item>
         <item name="colorOnPrimary">@color/color_on_article_bar</item>
@@ -41,6 +50,7 @@
         <item name="android:textColorHint">@color/color_gray</item>
         <item name="android:textColorPrimary">?attr/colorOnPrimary</item>
     </style>
+-->
 
     <style name="ArticleToolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="titleTextColor">?attr/colorOnPrimary</item>
@@ -59,19 +69,20 @@
         <item name="android:textColorPrimary">?attr/colorOnSurface</item>
     </style>
 
-<!--
-    <style name="NavBarTheme" parent="AppTheme">
-        <item name="colorSurface">@color/color_article_bar</item>
-        <item name="colorOnPrimary">@color/color_primary</item>
-    </style>
-
-    <style name="BottombarIcon">
+    <style name="CheckableIcon">
         <item name="android:layout_width">56dp</item>
         <item name="android:layout_height">56dp</item>
         <item name="android:padding">16dp</item>
         <item name="android:tint">@color/tint_color</item>
         <item name="android:background">@drawable/ripple</item>
     </style>
+
+<!--
+    <style name="NavBarTheme" parent="AppTheme">
+        <item name="colorSurface">@color/color_article_bar</item>
+        <item name="colorOnPrimary">@color/color_primary</item>
+    </style>
+
 
     <style name="BottombarSearchIcon" parent="BottombarIcon">
         <item name="android:tint">@color/tint_search_color</item>

@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/mobile_navigation">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/dishFragment">
 
+    <fragment
+        android:id="@+id/dishFragment"
+        android:name="ru.skillbranch.sbdelivery.ui.screens.dish.DishFragment"
+        android:label="DishFragment"
+        tools:layout="@layout/fragment_dish">
+        <argument
+            android:name="dishId"
+            app:argType="string"
+            android:defaultValue="1" />
+    </fragment>
 </navigation>

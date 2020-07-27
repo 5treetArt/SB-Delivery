@@ -8,6 +8,7 @@ import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
+import ru.skillbranch.sbdelivery.viewmodels.dish.DishViewModel
 
 class ViewModelFactory(
     owner: SavedStateRegistryOwner,
@@ -21,9 +22,9 @@ class ViewModelFactory(
         modelClass: Class<T>,
         handle: SavedStateHandle
     ): T {
-        //if (modelClass.isAssignableFrom(ArticleViewModel::class.java)) {
-        //    return ArticleViewModel(handle, params as String) as T
-        //}
+        if (modelClass.isAssignableFrom(DishViewModel::class.java)) {
+            return DishViewModel(handle, params as String) as T
+        }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

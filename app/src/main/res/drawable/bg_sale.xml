@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--sets up the margin-->
+    <item>
+        <shape android:shape="rectangle">
+            <corners
+                android:topRightRadius="8dp"
+                android:bottomRightRadius="8dp"
+                />
+            <solid android:color="@color/color_accent"/>
+            <!--sets up the padding to level the margin--><!--
+            <padding
+                android:left="8dp"
+                android:top="8dp"
+                android:right="8dp"
+                android:bottom="8dp"/>-->
+        </shape>
+    </item>
+</layer-list>
