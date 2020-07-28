@@ -1,25 +1,40 @@
 package ru.skillbranch.sbdelivery.ui.screens.dish
 
+import android.graphics.Paint
 import android.os.Bundle
+import android.widget.TextView
+import androidx.core.text.buildSpannedString
+import androidx.core.text.inSpans
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import kotlinx.android.synthetic.main.fragment_dish.*
 import ru.skillbranch.sbdelivery.R
+import ru.skillbranch.sbdelivery.data.repositories.MockDishRepository
+import ru.skillbranch.sbdelivery.extensions.attrValue
+import ru.skillbranch.sbdelivery.extensions.dpToPx
 import ru.skillbranch.sbdelivery.ui.base.BaseFragment
 import ru.skillbranch.sbdelivery.ui.base.Binding
+import ru.skillbranch.sbdelivery.ui.custom.HorizontalNumberPicker
+import ru.skillbranch.sbdelivery.ui.custom.spans.LeftDrawableSpan
+import ru.skillbranch.sbdelivery.ui.delegates.RenderProp
 import ru.skillbranch.sbdelivery.viewmodels.base.IViewModelState
 import ru.skillbranch.sbdelivery.viewmodels.base.ViewModelFactory
+import ru.skillbranch.sbdelivery.viewmodels.dish.DishState
 import ru.skillbranch.sbdelivery.viewmodels.dish.DishViewModel
 
 class DishFragment : BaseFragment<DishViewModel>() {
 
-    private val args: DishFragmentArgs by navArgs()
+    //private val args: DishFragmentArgs by navArgs()
+
+    private val args = MockDishRepository.findDish("5ed8da011f071c00465b2026").value!!
 
     override val viewModel: DishViewModel by viewModels {
         ViewModelFactory(
             owner = this,
-            params = args.dishId
+            params = args.id
         )
     }
 
@@ -29,20 +44,104 @@ class DishFragment : BaseFragment<DishViewModel>() {
 
     private val reviewsAdapter = ReviewsAdapter()
 
+    private val colorSurface by lazy { root.attrValue(R.attr.colorSurface) }
+    private val gap by lazy { root.dpToPx(8) }
+    private val starIcon by lazy {
+        root.getDrawable(R.drawable.ic_star_24dp_fill)!!.apply {
+            setTint(colorSurface)
+        }
+    }
+
     override fun setupViews() {
+
+        if (args.poster != null) {
+            Glide.with(root)
+                .load(args.poster)
+                //.listener(object : RequestListener<Drawable> {
+                //    override fun onLoadFailed(
+                //        e: GlideException?,
+                //        model: Any?,
+                //        target: Target<Drawable>?,
+                //        isFirstResource: Boolean
+                //    ): Boolean = false
+                //
+                //    override fun onResourceReady(
+                //        resource: Drawable?,
+                //        model: Any?,
+                //        target: Target<Drawable>?,
+                //        dataSource: DataSource?,
+                //        isFirstResource: Boolean
+                //    ): Boolean {
+                //        posterShimmer.stop()
+                //        return false
+                //    }
+                //})
+                //.placeholder(posterShimmer)
+                .transform(CenterCrop())
+                .into(iv_poster)
+        }
+
+        tv_sale.isVisible = args.isOnSale
+
+        btn_like.setOnClickListener {
+            viewModel.handleLike()
+        }
+
+        tv_title.text = args.name
+        tv_description.text = args.description
+        tv_old_price.text = "${args.oldPrice} ₽"
+        tv_old_price.paintFlags = tv_old_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        tv_old_price.isVisible = args.oldPrice != null
+        tv_price.text = "${args.price} ₽"
+        with(picker) {
+            this.setMinValue(0F)
+            this.setCounterListener(object : HorizontalNumberPicker.OnValueChangeListener {
+                override fun onValueChange(view: HorizontalNumberPicker, newValue: Float) {
+                    viewModel.handleAmount(newValue.toInt())
+                }
+            })
+        }
+
+        btn_add.setOnClickListener {
+            //
+        }
+
+        tv_rating.setText(buildSpannedString {
+            inSpans(LeftDrawableSpan(starIcon, gap, colorSurface)) {
+                append("${args.rating}/5")
+            }
+        }, TextView.BufferType.SPANNABLE)
+
+        btn_add_review.setOnClickListener {
+            //val action = DishFragmentDirections.PageDishToPageReview()
+            //viewModel.navigate(NavigationCommand.To(action.id, action.arguments))
+        }
+
         with(rv_reviews) {
             adapter = reviewsAdapter
             layoutManager = LinearLayoutManager(context)
         }
+        viewModel.observeList(viewLifecycleOwner) { reviewsAdapter.submitList(it) }
     }
 
     inner class DishBinding : Binding() {
 
-        override val afterInflated: (() -> Unit)?
-            get() = super.afterInflated
+        var amount: Int by RenderProp(1) {
+            picker.setValue(it.toFloat())
+        }
+
+        var isLike: Boolean by RenderProp(false) {
+            btn_like.isChecked = it
+        }
+
+        override val afterInflated = {
+
+        }
 
         override fun bind(data: IViewModelState) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            data as DishState
+            amount = data.amount
+            isLike = data.isLike
         }
 
         override fun saveUi(outState: Bundle) {

@@ -6,7 +6,7 @@ data class DishFull(
     val id: String,
     val name: String,
     val description: String? = null,
-    val image: String? = null,
+    val poster: String? = null,
     val oldPrice: String? = null,
     val price: Int,
     val rating: Float? = null,

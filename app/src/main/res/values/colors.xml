@@ -8,6 +8,7 @@
 
     <color name="color_accent_dark">#EF3131</color>
     <color name="color_gray">#A6A6B2</color>
+    <color name="color_gray2">#BDBDBD</color>
     <color name="color_gray_dark">#33313B</color>
     <color name="color_gray_light">#B3BFCF</color>
     <color name="color_surface">#FF6F14</color>

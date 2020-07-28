@@ -27,9 +27,11 @@ class ReviewVH(override val containerView: View) :
     RecyclerView.ViewHolder(containerView), LayoutContainer {
 
     fun bind(data: ReviewItemData) {
-        tv_name_date.text = "${data.author}, ${data.updatedAt.format("dd.MM.yy")}"
+        tv_name_date.text = "${data.author}, ${data.date.format("dd.MM.yy")}"
         rating.rating = data.rating.toFloat()
         rating.numStars = data.rating
+        rating.max = data.rating
+        rating.invalidate()
         tv_review.text = data.text ?: ""
         tv_review.isVisible = data.text != null
     }
@@ -37,7 +39,7 @@ class ReviewVH(override val containerView: View) :
 
 private val callback = object : DiffUtil.ItemCallback<ReviewItemData>() {
     override fun areItemsTheSame(oldItem: ReviewItemData, newItem: ReviewItemData) =
-        oldItem.id == newItem.id
+        oldItem.date == newItem.date
 
     override fun areContentsTheSame(oldItem: ReviewItemData, newItem: ReviewItemData) =
         oldItem == newItem

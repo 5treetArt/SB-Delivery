@@ -2,25 +2,25 @@ package ru.skillbranch.sbdelivery.data.repositories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.delay
+import androidx.lifecycle.map
+import androidx.paging.DataSource
+import androidx.paging.PositionalDataSource
 import ru.skillbranch.sbdelivery.data.local.entities.DishFull
 import ru.skillbranch.sbdelivery.data.models.ReviewItemData
 import java.util.*
 
 interface IDishRepository {
     fun findDish(dishId: String): LiveData<DishFull>
-    fun toggleLike(dishId: String)
     fun isAuth(): LiveData<Boolean>
-    fun loadReviewsByRange(size: Int, dishId: String): List<ReviewItemData>
-    fun sendReview(dishId: String, text: String)
-    fun loadAllReviews(dishId: String, total: Int): ReviewsDataFactory
-    fun decrementLike(dishId: String)
-    fun incrementLike(dishId: String)
+    fun loadReviewsByRange(position: Int, size: Int, dishId: String): List<ReviewItemData>
+    fun sendReview(dishId: String, name: String, date: Date, rating: Int, text: String?)
+    fun allReviews(dishId: String, totalCount: Int): ReviewsDataFactory
+    fun toggleLike(dishId: String)
     fun fetchDishContent(dishId: String)
     fun findDishCommentCount(dishId: String): LiveData<Int>
 }
 
-object DishRepository : IDishRepository {
+object MockDishRepository : IDishRepository {
 
     private val dishes = listOf(
         MutableLiveData(
@@ -28,7 +28,7 @@ object DishRepository : IDishRepository {
                 id = "5ed8da011f071c00465b2026",
                 name = "Бургер \"Америка\"",
                 description = "320 г • Котлета из 100% говядины (прожарка medium) на гриле, картофельная булочка на гриле, фирменный соус, лист салата, томат, маринованный лук, жареный бекон, сыр чеддер.",
-                image = "https://www.delivery-club.ru/media/cms/relation_product/32350/312372888_m200.jpg",
+                poster = "https://www.delivery-club.ru/media/cms/relation_product/32350/312372888_m200.jpg",
                 oldPrice = "259",
                 price = 170,
                 rating = 3.8f,
@@ -41,43 +41,75 @@ object DishRepository : IDishRepository {
         )
     )
 
+    private val network = MockNetworkDataHolder
+
     override fun findDish(dishId: String): LiveData<DishFull> {
         return dishes[0]
-    }
-
-    override fun toggleLike(dishId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun isAuth(): LiveData<Boolean> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun loadReviewsByRange(size: Int, dishId: String): List<ReviewItemData> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun loadReviewsByRange(position: Int, size: Int, dishId: String): List<ReviewItemData> {
+        return network.reviewsData
+            .getOrElse(dishId) { MutableLiveData(emptyList()) }
+            .value!!
+            .drop(position)
+            .take(size)
     }
 
-    override fun sendReview(dishId: String, text: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun sendReview(dishId: String, name: String, date: Date, rating: Int, text: String?) {
+        network.sendReview(dishId, name, date, rating, text)
+        //TODO UPDATE local reviews
     }
 
-    override fun loadAllReviews(dishId: String, total: Int): ReviewsDataFactory {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
-    override fun decrementLike(dishId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
-    override fun incrementLike(dishId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun allReviews(dishId: String, totalCount: Int) = ReviewsDataFactory(
+        itemProvider = ::loadReviewsByRange,
+        dishId = dishId,
+        totalCount = totalCount
+    )
+
+    override fun toggleLike(dishId: String) {
+        val dish = dishes[0].value!!
+        dishes[0].value = dish.copy(isLike = !dish.isLike)
+        //TODO increment or decrement likes count?
     }
 
     override fun fetchDishContent(dishId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //TODO load from network, insert to db
     }
 
     override fun findDishCommentCount(dishId: String): LiveData<Int> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return network.reviewsData.getOrPut(dishId) { MutableLiveData(emptyList()) }.map { it.size }
+    }
+}
+
+class ReviewsDataFactory(
+    private val itemProvider: (Int, Int, String) -> List<ReviewItemData>,
+    private val dishId: String,
+    private val totalCount: Int
+) : DataSource.Factory<Int, ReviewItemData>() {
+    override fun create(): DataSource<Int, ReviewItemData> = ReviewsDataSource(itemProvider, dishId, totalCount)
+}
+
+class ReviewsDataSource(
+    private val itemProvider: (Int, Int, String) -> List<ReviewItemData>,
+    private val dishId: String,
+    private val totalCount: Int
+) : PositionalDataSource<ReviewItemData>() {
+    override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<ReviewItemData>) {
+        val result = itemProvider(params.startPosition, params.loadSize, dishId)
+        callback.onResult(result)
+    }
+
+    override fun loadInitial(
+        params: LoadInitialParams,
+        callback: LoadInitialCallback<ReviewItemData>
+    ) {
+        val result = itemProvider(params.requestedStartPosition, params.requestedLoadSize, dishId)
+        callback.onResult(result, params.requestedStartPosition, totalCount)
     }
 }

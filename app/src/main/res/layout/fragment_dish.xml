@@ -84,14 +84,12 @@
             android:fontFamily="sans-serif-light"
             android:textColor="@color/color_on_surface"
             android:textSize="@dimen/font_huge_24"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/tv_price"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintRight_toLeftOf="@id/tv_price"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/tv_price"
-            tools:text=" ̶7̶8̶0̶ ̶₽̶"
-            tools:visibility="visible" />
+            tools:text=" ̶7̶8̶0̶ ̶₽̶"/>
 
         <TextView
             android:id="@+id/tv_price"
@@ -101,12 +99,10 @@
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/color_surface"
             android:textSize="@dimen/font_huge_24"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/picker"
             app:layout_constraintTop_toTopOf="@id/picker"
             app:layout_constraintLeft_toRightOf="@id/tv_old_price"
-            tools:text="680 ₽"
-            tools:visibility="visible" />
+            tools:text="680 ₽"/>
 
         <ru.skillbranch.sbdelivery.ui.custom.HorizontalNumberPicker
             android:id="@+id/picker"
@@ -134,6 +130,9 @@
             android:fontFamily="sans-serif-medium"
             android:backgroundTint="@color/color_surface"
             android:padding="@dimen/spacing_small_8"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:letterSpacing="0"
             android:text="Добавить в корзину"/>
 
         <View
@@ -181,6 +180,7 @@
             app:layout_constraintEnd_toEndOf="@id/background"
             app:layout_constraintTop_toTopOf="@id/background"
             app:backgroundTint="?attr/colorOnPrimarySurface"
+            android:letterSpacing="0"
             android:text="Добавить отзыв"
             android:textSize="@dimen/font_small_12"
             android:fontFamily="sans-serif-medium"/>
