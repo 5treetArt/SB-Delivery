@@ -12,11 +12,9 @@ import android.widget.LinearLayout
 import androidx.annotation.*
 import kotlinx.android.synthetic.main.layout_counter_view.view.*
 import ru.skillbranch.sbdelivery.R
-import ru.skillbranch.sbdelivery.extensions.format
 import ru.skillbranch.sbdelivery.extensions.hideKeyboard
 import ru.skillbranch.sbdelivery.extensions.setOnHoldListener
 import ru.skillbranch.sbdelivery.extensions.setTextIfDifferent
-import java.util.*
 
 
 class HorizontalNumberPicker @JvmOverloads constructor(
@@ -25,20 +23,19 @@ class HorizontalNumberPicker @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
-    private var counterValue = 0f
+    private var value = 0
     private var incIcon: Drawable? = null
     private var decIcon: Drawable? = null
     @ColorInt
-    private var incDecButtonTint = 0
+    private var buttonTint = 0
     private var viewBackground: Drawable? = null
     private var strokeWidthRef = 0
-    private var incDecViewBorderWidth = 0f
-    private var incDecViewBorderColor = 0
-    private var incDecViewIncrement = 1f
-    private var incDecViewMinValue = Float.MIN_VALUE
-    private var incDecViewMaxValue = Float.MAX_VALUE
-    private var incDecViewAppendStr: String? = null
-    private var incDecViewCounterValueColor = 0
+    private var borderWidth = 0f
+    private var borderColor = 0
+    private var increment = 1
+    private var minValue = Int.MIN_VALUE
+    private var maxValue = Int.MAX_VALUE
+    private var counterValueColor = 0
     private var repeatIntervalMillis = 100L
     private var defWidthValue = 0f
     private var onValueChangedListener: OnValueChangeListener? = null
@@ -56,7 +53,7 @@ class HorizontalNumberPicker @JvmOverloads constructor(
     //save state
     override fun onSaveInstanceState(): Parcelable? {
         val savedState = SavedState(super.onSaveInstanceState())
-        savedState.ssCounter = counterValue
+        savedState.ssValue = value
         return savedState
     }
 
@@ -64,14 +61,14 @@ class HorizontalNumberPicker @JvmOverloads constructor(
     override fun onRestoreInstanceState(state: Parcelable) {
         super.onRestoreInstanceState(state)
         if (state is SavedState) {
-            setValue(state.ssCounter)
+            setValue(state.ssValue)
         }
     }
 
     private fun defValues(context: Context) {
         incIcon = context.resources.getDrawable(R.drawable.ic_chevron_right_black_24dp, context.theme)
         decIcon = context.resources.getDrawable(R.drawable.ic_chevron_left_black_24dp, context.theme)
-        incDecButtonTint = context.resources.getColor(android.R.color.transparent)
+        buttonTint = context.resources.getColor(android.R.color.transparent)
         viewBackground = context.resources.getDrawable(R.color.color_primary, context.theme)
     }
 
@@ -81,15 +78,14 @@ class HorizontalNumberPicker @JvmOverloads constructor(
             incIcon = a.getDrawable(R.styleable.HorizontalNumberPicker_hnp_inc_icon)
             decIcon = a.getDrawable(R.styleable.HorizontalNumberPicker_hnp_dec_icon)
             viewBackground = a.getDrawable(R.styleable.HorizontalNumberPicker_hnp_background)
-            incDecButtonTint = a.getColor(R.styleable.HorizontalNumberPicker_hnp_button_color, 0)
-            incDecViewBorderWidth = a.getDimension(R.styleable.HorizontalNumberPicker_hnp_border_width, 0f)
-            incDecViewBorderColor = a.getColor(R.styleable.HorizontalNumberPicker_hnp_border_color, 0)
-            counterValue = a.getFloat(R.styleable.HorizontalNumberPicker_hnp_startCounterValue, 1f)
-            incDecViewIncrement = a.getFloat(R.styleable.HorizontalNumberPicker_hnp_increment, 1f)
-            incDecViewAppendStr = a.getString(R.styleable.HorizontalNumberPicker_hnp_appendStr) ?: ""
-            incDecViewCounterValueColor = a.getColor(R.styleable.HorizontalNumberPicker_hnp_counterValueColor, 0)
-            incDecViewMinValue = a.getFloat(R.styleable.HorizontalNumberPicker_hnp_minValue, Float.MIN_VALUE)
-            incDecViewMaxValue = a.getFloat(R.styleable.HorizontalNumberPicker_hnp_maxValue, Float.MAX_VALUE)
+            buttonTint = a.getColor(R.styleable.HorizontalNumberPicker_hnp_button_color, 0)
+            borderWidth = a.getDimension(R.styleable.HorizontalNumberPicker_hnp_border_width, 0f)
+            borderColor = a.getColor(R.styleable.HorizontalNumberPicker_hnp_border_color, 0)
+            value = a.getInt(R.styleable.HorizontalNumberPicker_hnp_value, 1)
+            increment = a.getInt(R.styleable.HorizontalNumberPicker_hnp_increment, 1)
+            counterValueColor = a.getColor(R.styleable.HorizontalNumberPicker_hnp_textColor, 0)
+            minValue = a.getInt(R.styleable.HorizontalNumberPicker_hnp_minValue, Int.MIN_VALUE)
+            maxValue = a.getInt(R.styleable.HorizontalNumberPicker_hnp_maxValue, Int.MAX_VALUE)
         } catch (e: Exception) {
             //Log.i("TAG_IncDecView", "init: " + e.localizedMessage)
         } finally {
@@ -109,10 +105,10 @@ class HorizontalNumberPicker @JvmOverloads constructor(
         //}
 
         btn_inc.setOnHoldListener(repeatIntervalMillis, 400L, {
-            onValueChangedListener?.onValueChange(this, counterValue)
+            onValueChangedListener?.onValueChange(this, value)
         }) {
-            counterValue = et_value.text.toString().split(' ').first().toFloatOrNull() ?: counterValue
-            counterValue += incDecViewIncrement
+            value = et_value.text.toString().split(' ').first().toIntOrNull() ?: value
+            value += increment
             context.hideKeyboard(et_value)
             et_value.clearFocus()
             refreshCounter()
@@ -128,10 +124,10 @@ class HorizontalNumberPicker @JvmOverloads constructor(
         //    onValueChangedListener?.onValueChange(this, old, counterValue)
         //}
         btn_dec.setOnHoldListener(repeatIntervalMillis, 400L, {
-            onValueChangedListener?.onValueChange(this, counterValue)
+            onValueChangedListener?.onValueChange(this, value)
         }) {
-            counterValue = et_value.text.toString().split(' ').first().toFloatOrNull() ?: counterValue
-            counterValue -= incDecViewIncrement
+            value = et_value.text.toString().split(' ').first().toIntOrNull() ?: value
+            value -= increment
             context.hideKeyboard(et_value)
             et_value.clearFocus()
             refreshCounter()
@@ -163,45 +159,45 @@ class HorizontalNumberPicker @JvmOverloads constructor(
         }
 
         et_value.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) et_value.setText("$counterValue")
+            if (hasFocus) et_value.setText("$value")
             else updateCounter()
         }
     }
 
     private fun updateCounter() {
-        counterValue = et_value.text.toString().split(' ').first().toFloatOrNull() ?: counterValue
+        value = et_value.text.toString().toIntOrNull() ?: value
         context.hideKeyboard(et_value)
         et_value.clearFocus()
         refreshCounter()
-        onValueChangedListener?.onValueChange(this, counterValue)
+        onValueChangedListener?.onValueChange(this, value)
     }
 
     private fun applyValues() {
         if (incIcon != null) btn_inc.setImageDrawable(incIcon)
         if (decIcon != null) btn_dec.setImageDrawable(decIcon)
         if (viewBackground != null) root_view.background = viewBackground
-        if (incDecButtonTint != 0) {
-            btn_inc.imageTintList = ColorStateList.valueOf(incDecButtonTint)
-            btn_dec.imageTintList = ColorStateList.valueOf(incDecButtonTint)
+        if (buttonTint != 0) {
+            btn_inc.imageTintList = ColorStateList.valueOf(buttonTint)
+            btn_dec.imageTintList = ColorStateList.valueOf(buttonTint)
         }
-        if (incDecViewBorderWidth != 0f) {
-            this.setBorderWidth(incDecViewBorderWidth)
+        if (borderWidth != 0f) {
+            this.setBorderWidth(borderWidth)
         }
-        if (incDecViewBorderColor != 0) {
-            initBorderColor(incDecViewBorderColor)
+        if (borderColor != 0) {
+            initBorderColor(borderColor)
         }
         refreshCounter()
-        if (incDecViewCounterValueColor != 0) {
-            et_value.setTextColor(incDecViewCounterValueColor)
+        if (counterValueColor != 0) {
+            et_value.setTextColor(counterValueColor)
         }
     }
 
-    fun setValue(counter: Float) {
-        counterValue = counter
+    fun setValue(counter: Int) {
+        value = counter
         refreshCounter()
     }
 
-    fun getValue() = counterValue
+    fun getValue() = value
 
     fun setCounterListener(onValueChangeListener: OnValueChangeListener) {
         this.onValueChangedListener = onValueChangeListener
@@ -211,9 +207,9 @@ class HorizontalNumberPicker @JvmOverloads constructor(
         repeatIntervalMillis = intervalMillis
     }
 
-    fun setOnValueChangedListener(onChanged: (view: HorizontalNumberPicker, newValue: Float) -> Unit) {
+    fun setOnValueChangedListener(onChanged: (view: HorizontalNumberPicker, newValue: Int) -> Unit) {
         onValueChangedListener = object : OnValueChangeListener {
-            override fun onValueChange(view: HorizontalNumberPicker, newValue: Float) =
+            override fun onValueChange(view: HorizontalNumberPicker, newValue: Int) =
                 onChanged(view, newValue)
         }
     }
@@ -245,32 +241,27 @@ class HorizontalNumberPicker @JvmOverloads constructor(
         root_view?.background = drawable
     }
 
-    fun setAppendStr(appendStr: String?) {
-        incDecViewAppendStr = appendStr
+    fun setIncrement(increment: Int) {
+        this.increment = increment
         refreshCounter()
     }
 
-    fun setIncrement(increment: Float) {
-        incDecViewIncrement = increment
+    fun setMinValue(minValue: Int) {
+        this.minValue = minValue
         refreshCounter()
     }
 
-    fun setMinValue(minValue: Float) {
-        incDecViewMinValue = minValue
+    fun setMaxValue(maxValue: Int) {
+        this.maxValue = maxValue
         refreshCounter()
     }
 
-    fun setMaxValue(maxValue: Float) {
-        incDecViewMaxValue = maxValue
-        refreshCounter()
+    fun getMinValue(): Int {
+        return minValue
     }
 
-    fun getMinValue(): Float {
-        return incDecViewMinValue
-    }
-
-    fun getMaxValue(): Float {
-        return incDecViewMaxValue
+    fun getMaxValue(): Int {
+        return maxValue
     }
 
     fun setBorderColor(@ColorRes strokeColor: Int) {
@@ -300,21 +291,22 @@ class HorizontalNumberPicker @JvmOverloads constructor(
     }
 
     private fun refreshCounter() {
-        if (counterValue < incDecViewMinValue) counterValue = incDecViewMinValue
-        if (counterValue > incDecViewMaxValue) counterValue = incDecViewMaxValue
-        refreshCounter(counterValue, incDecViewAppendStr)
+        if (value < minValue) value = minValue
+        if (value > maxValue) value = maxValue
+        refreshCounter(value)
     }
 
-    private fun refreshCounter(counter: Float, appendStr: String?) {
-        et_value.setTextIfDifferent(
-            String.format(
-                Locale.getDefault(),
-                "%s %s",
-                counter.format(1),
-                //format.format(counter.toDouble()),
-                appendStr
-            )
-        )
+    private fun refreshCounter(counter: Int) {
+        val text = formatter?.format(counter) ?: "$counter"
+        et_value.setTextIfDifferent(text)
+        //    String.format(
+        //        Locale.getDefault(),
+        //        "%s %s",
+        //        counter.format(1),
+        //        //format.format(counter.toDouble()),
+        //        appendStr
+        //    )
+        //)
     }
 
     private fun getDimension(@DimenRes dimenID: Int): Float {
@@ -334,17 +326,17 @@ class HorizontalNumberPicker @JvmOverloads constructor(
     }
 
     private class SavedState : BaseSavedState, Parcelable {
-        var ssCounter: Float = 0f
+        var ssValue: Int = 0
 
         constructor(superState: Parcelable?) : super(superState)
 
         constructor(src: Parcel) : super(src) {
-            ssCounter = src.readFloat()
+            ssValue = src.readInt()
         }
 
         override fun writeToParcel(dst: Parcel, flags: Int) {
             super.writeToParcel(dst, flags)
-            dst.writeFloat(ssCounter)
+            dst.writeInt(ssValue)
         }
 
         override fun describeContents() = 0
@@ -395,8 +387,11 @@ class HorizontalNumberPicker @JvmOverloads constructor(
         throw RuntimeException("Stub!")
     }
 
-
     fun setTextColor(color: Int) {
+        throw RuntimeException("Stub!")
+    }
+
+    fun setIconTint(color: Int) {
         throw RuntimeException("Stub!")
     }
 
@@ -422,11 +417,11 @@ class HorizontalNumberPicker @JvmOverloads constructor(
 
     interface OnValueChangeListener {
 
-        fun onValueChange(view: HorizontalNumberPicker, oldValue: Float, newValue: Float) {
+        fun onValueChange(view: HorizontalNumberPicker, oldValue: Int, newValue: Int) {
             onValueChange(view, newValue)
         }
 
-        fun onValueChange(view: HorizontalNumberPicker, newValue: Float)
+        fun onValueChange(view: HorizontalNumberPicker, newValue: Int)
 
         //fun onValueChanged(value: Float)
         //@CallSuper

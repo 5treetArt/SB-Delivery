@@ -18,7 +18,10 @@
 
     <color name="color_divider">#2C2C33</color>
 
-<!--    <color name="color_article_bar">#FFFFFF</color>
-    <color name="color_on_article_bar">#1C0E42</color>
-    <color name="color_divider2">#FC4C4C</color>-->
+    <color name="color_article_bar">#24222C</color>
+    <color name="color_on_article_bar">#FF6F14</color>
+
+    <!--    <color name="color_article_bar">#FFFFFF</color>
+        <color name="color_on_article_bar">#1C0E42</color>
+        <color name="color_divider2">#FC4C4C</color>-->
 </resources>

@@ -17,6 +17,7 @@ import ru.skillbranch.sbdelivery.extensions.attrValue
 import ru.skillbranch.sbdelivery.extensions.dpToPx
 import ru.skillbranch.sbdelivery.ui.base.BaseFragment
 import ru.skillbranch.sbdelivery.ui.base.Binding
+import ru.skillbranch.sbdelivery.ui.base.ToolbarBuilder
 import ru.skillbranch.sbdelivery.ui.custom.HorizontalNumberPicker
 import ru.skillbranch.sbdelivery.ui.custom.spans.LeftDrawableSpan
 import ru.skillbranch.sbdelivery.ui.delegates.RenderProp
@@ -41,6 +42,10 @@ class DishFragment : BaseFragment<DishViewModel>() {
     override val layout = R.layout.fragment_dish
 
     override val binding by lazy { DishBinding() }
+
+    override val prepareToolbar: (ToolbarBuilder.() -> Unit)? = {
+        this.setTitle(args.name)
+    }
 
     private val reviewsAdapter = ReviewsAdapter()
 
@@ -94,12 +99,14 @@ class DishFragment : BaseFragment<DishViewModel>() {
         tv_old_price.isVisible = args.oldPrice != null
         tv_price.text = "${args.price} ₽"
         with(picker) {
-            this.setMinValue(0F)
-            this.setCounterListener(object : HorizontalNumberPicker.OnValueChangeListener {
-                override fun onValueChange(view: HorizontalNumberPicker, newValue: Float) {
-                    viewModel.handleAmount(newValue.toInt())
+            setMinValue(0)
+            setCounterListener(object : HorizontalNumberPicker.OnValueChangeListener {
+                override fun onValueChange(view: HorizontalNumberPicker, newValue: Int) {
+                    viewModel.handleAmount(newValue)
                 }
             })
+            //setTextColor(colorSurface)
+            //setIconTint(colorSurface)
         }
 
         btn_add.setOnClickListener {
@@ -127,7 +134,7 @@ class DishFragment : BaseFragment<DishViewModel>() {
     inner class DishBinding : Binding() {
 
         var amount: Int by RenderProp(1) {
-            picker.setValue(it.toFloat())
+            picker.setValue(it)
         }
 
         var isLike: Boolean by RenderProp(false) {

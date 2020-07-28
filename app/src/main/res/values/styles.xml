@@ -32,9 +32,7 @@
         <item name="lightSurfaceColor"  >#F6F6F6</item>
         <item name="darkOnSurfaceColor" >#F6F6F6</item>
         <item name="lightOnSurfaceColor" >#202020</item>
-
     </style>
-
 
     <style name="CustomRatingBar" parent="Theme.AppCompat">
         <item name="colorControlNormal">@color/color_gray2</item>
@@ -42,12 +40,12 @@
     </style>
 
     <style name="ArticleBarsTheme" parent="ThemeOverlay.MaterialComponents.ActionBar">
-<!--        <item name="colorPrimary">@color/color_article_bar</item>
-        <item name="colorOnPrimary">@color/color_on_article_bar</item>
-        <item name="colorSurface">@color/color_article_bar</item>
+        <item name="colorPrimary">@color/color_article_bar</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSurface">@color/color_article_bar</item>-->
         <item name="colorControlNormal">@color/color_on_article_bar</item>
         <item name="android:textColorHint">@color/color_gray</item>
-        <item name="android:textColorPrimary">?attr/colorOnPrimary</item>-->
+        <item name="android:textColorPrimary">?attr/colorOnPrimary</item>
     </style>
 
 
