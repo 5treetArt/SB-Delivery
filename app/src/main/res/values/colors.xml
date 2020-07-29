@@ -17,6 +17,7 @@
     <color name="opacity_color_surface">#08000000</color>
 
     <color name="color_divider">#2C2C33</color>
+    <color name="color_divider2">#48484D</color>
 
     <color name="color_article_bar">#24222C</color>
     <color name="color_on_article_bar">#FF6F14</color>

@@ -99,14 +99,11 @@ class DishFragment : BaseFragment<DishViewModel>() {
         tv_old_price.isVisible = args.oldPrice != null
         tv_price.text = "${args.price} ₽"
         with(picker) {
-            setMinValue(0)
             setCounterListener(object : HorizontalNumberPicker.OnValueChangeListener {
                 override fun onValueChange(view: HorizontalNumberPicker, newValue: Int) {
                     viewModel.handleAmount(newValue)
                 }
             })
-            //setTextColor(colorSurface)
-            //setIconTint(colorSurface)
         }
 
         btn_add.setOnClickListener {

@@ -33,10 +33,12 @@
     <dimen name="indicator_size">32dp</dimen>
     <dimen name="icon_drink_calendar_20">20dp</dimen>
 
-    <dimen name="inc_dec_counter_view_stroke_width">1dp</dimen>
-    <dimen name="inc_dec_counter_view_corner_radius">20dp</dimen>
-    <dimen name="inc_dec_counter_view_def_padding">10dp</dimen>
-    <dimen name="inc_dec_counter_view_button_background_radius">50dp</dimen>
+    <dimen name="hnp_stroke_width">1dp</dimen>
+    <dimen name="hnp_corner_radius">20dp</dimen>
+    <dimen name="hnp_def_padding">10dp</dimen>
+    <dimen name="hnp_def_text_size">14sp</dimen>
+    <dimen name="hnp_button_background_radius">50dp</dimen>
+
     <dimen name="item_calendar_day_drink_size">80dp</dimen>
     <dimen name="font_day_number_75">75sp</dimen>
     <dimen name="font_big_20">20sp</dimen>

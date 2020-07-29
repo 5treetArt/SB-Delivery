@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="HorizontalNumberPicker">
-        <attr name="hnp_inc_icon" format="reference"/>
-        <attr name="hnp_dec_icon" format="reference"/>
-        <attr name="hnp_background" format="reference|color"/>
-        <attr name="hnp_button_color" format="reference|color"/>
-        <attr name="hnp_border_width" format="reference|dimension"/>
-        <attr name="hnp_border_color" format="reference|color"/>
+        <attr name="hnp_incIcon" format="reference"/>
+        <attr name="hnp_decIcon" format="reference"/>
+        <attr name="hnp_backgroundColor" format="reference|color"/>
+        <attr name="hnp_buttonTint" format="reference|color"/>
+        <attr name="hnp_borderWidth" format="reference|dimension"/>
+        <attr name="hnp_cornerRadius" format="reference|dimension"/>
+        <attr name="hnp_textSize" format="reference|dimension"/>
+        <attr name="hnp_borderColor" format="reference|color"/>
         <attr name="hnp_value" format="reference|float"/>
         <attr name="hnp_increment" format="reference|float"/>
         <attr name="hnp_textColor" format="reference|color"/>

@@ -84,7 +84,7 @@
             android:fontFamily="sans-serif-light"
             android:textColor="@color/color_on_surface"
             android:textSize="@dimen/font_huge_24"
-            app:layout_constraintBottom_toBottomOf="@id/tv_price"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_price"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintRight_toLeftOf="@id/tv_price"
             app:layout_constraintStart_toStartOf="parent"
@@ -107,12 +107,20 @@
         <ru.skillbranch.sbdelivery.ui.custom.HorizontalNumberPicker
             android:id="@+id/picker"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="44dp"
             android:layout_marginTop="@dimen/spacing_huge_32"
             android:layout_marginEnd="@dimen/spacing_normal_16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_description"
-            app:layout_constraintBottom_toTopOf="@id/btn_add"/>
+            app:layout_constraintBottom_toTopOf="@id/btn_add"
+            app:hnp_decIcon="@drawable/ic_remove_black_12dp"
+            app:hnp_incIcon="@drawable/ic_add_black_12dp"
+            app:hnp_buttonTint="?attr/colorSurface"
+            app:hnp_textSize="14sp"
+            app:hnp_borderWidth="1dp"
+            app:hnp_cornerRadius="6dp"
+            app:hnp_borderColor="@color/color_divider2"
+            app:hnp_textColor="?attr/colorSurface"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_add"
