@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/root_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="@color/color_primary_dark"
-        android:focusable="true"
-        android:focusableInTouchMode="true">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/color_primary_dark"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <ImageButton
-            android:id="@+id/btn_dec"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:padding="@dimen/spacing_tiny_4"
-            android:src="@drawable/ic_chevron_left_black_24dp"
-            android:background="@android:color/transparent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/divider_left"/>
+        android:id="@+id/btn_dec"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/spacing_tiny_4"
+        android:background="@android:color/transparent"
+        android:padding="@dimen/spacing_tiny_4"
+        android:src="@drawable/ic_chevron_left_black_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/divider_left"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <!--TODO IMPROVEMENT: Add views programmatically and calculate its size-->
     <View
         android:id="@+id/divider_left"
         android:layout_width="0dp"
@@ -31,28 +33,27 @@
         app:layout_constraintLeft_toRightOf="@id/btn_dec"
         app:layout_constraintRight_toLeftOf="@id/et_value"/>
 
-    <!--TODO IMPROVEMENT: Add views programmatically and calculate its size-->
     <EditText
-            android:id="@+id/et_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="44dp"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:background="@null"
-            android:singleLine="true"
-            android:imeOptions="actionDone"
-            android:inputType="number|numberDecimal"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/divider_left"
-            app:layout_constraintRight_toLeftOf="@id/divider_right"
-            tools:text="1"
-            tools:textColor="@android:color/white"/>
+        android:id="@+id/et_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@null"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:imeOptions="actionDone"
+        android:inputType="number|numberDecimal"
+        android:minWidth="44dp"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/divider_left"
+        app:layout_constraintRight_toLeftOf="@id/divider_right"
+        tools:text="1"
+        tools:textColor="@android:color/white" />
 
     <View
         android:id="@+id/divider_right"
@@ -61,19 +62,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/et_value"
-        app:layout_constraintRight_toLeftOf="@id/btn_inc"/>
+        app:layout_constraintRight_toLeftOf="@id/btn_inc" />
 
     <ImageButton
-            android:id="@+id/btn_inc"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:padding="@dimen/spacing_tiny_4"
-            android:src="@drawable/ic_chevron_right_black_24dp"
-            android:background="@android:color/transparent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/divider_right"/>
+        android:id="@+id/btn_inc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/spacing_tiny_4"
+        android:background="@android:color/transparent"
+        android:padding="@dimen/spacing_tiny_4"
+        android:src="@drawable/ic_chevron_right_black_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/divider_right"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

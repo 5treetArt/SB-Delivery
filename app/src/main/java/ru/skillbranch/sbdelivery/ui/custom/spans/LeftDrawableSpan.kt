@@ -58,7 +58,7 @@ class LeftDrawableSpan(
         fm: Paint.FontMetricsInt?
     ): Int {
         if (fm != null) {
-            iconSize = fm.descent - fm.ascent //fontSize
+            iconSize = (paint.descent() - paint.ascent()).toInt() //fm.descent - fm.ascent //fontSize
             drawable.setBounds(0, 0, iconSize, iconSize)
         }
         textWidth = paint.measureText(text.toString(), start, end)

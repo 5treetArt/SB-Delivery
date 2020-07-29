@@ -98,13 +98,12 @@ class DishFragment : BaseFragment<DishViewModel>() {
         tv_old_price.paintFlags = tv_old_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         tv_old_price.isVisible = args.oldPrice != null
         tv_price.text = "${args.price} ₽"
-        with(picker) {
-            setCounterListener(object : HorizontalNumberPicker.OnValueChangeListener {
-                override fun onValueChange(view: HorizontalNumberPicker, newValue: Int) {
-                    viewModel.handleAmount(newValue)
-                }
-            })
-        }
+        picker.setCounterListener(object : HorizontalNumberPicker.OnValueChangeListener {
+            override fun onValueChange(view: HorizontalNumberPicker, newValue: Int) {
+                viewModel.handleAmount(newValue)
+            }
+        })
+
 
         btn_add.setOnClickListener {
             //

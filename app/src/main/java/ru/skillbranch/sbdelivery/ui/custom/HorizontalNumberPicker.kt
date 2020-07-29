@@ -7,9 +7,12 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.annotation.CallSuper
 import androidx.annotation.ColorInt
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
@@ -33,20 +36,15 @@ class HorizontalNumberPicker @JvmOverloads constructor(
     private var buttonTint = 0
     private var viewBackground: Drawable? = null
     private var borderWidth = -1f
+    private val defaultBorderWidth by lazy { getDimension(R.dimen.hnp_stroke_width).toInt() }
     private var borderColor = 0
+    private val defaultBorderColor by lazy { resources.getColor(android.R.color.darker_gray) }
     private var cornerRadius = 0f
-    private val defaultTextSize by lazy { resources.getDimension(R.dimen.hnp_def_text_size) }
-    private var textSize = 0f
-        get() {
-            field = et_value.textSize
-            return field
-        }
-        set(value) {
-            et_value.setTextSize(TypedValue.COMPLEX_UNIT_PT, value)
-            requestLayout()
-            field = value
-        }
-
+    private val defaultCornerRadius by lazy { getDimension(R.dimen.hnp_corner_radius) }
+    private var dividerWidth = -1f
+    private val defaultDividerWidth by lazy { getDimension(R.dimen.hnp_stroke_width).toInt() }
+    private var textSize = 0
+    private val defaultTextSize by lazy { resources.getDimensionPixelSize(R.dimen.hnp_def_text_size) }
     private var increment = 1
     private var minValue = Int.MIN_VALUE
     private var maxValue = Int.MAX_VALUE
@@ -80,10 +78,10 @@ class HorizontalNumberPicker @JvmOverloads constructor(
     }
 
     private fun defValues(context: Context) {
-        incIcon = context.resources.getDrawable(R.drawable.ic_chevron_right_black_24dp, context.theme)
-        decIcon = context.resources.getDrawable(R.drawable.ic_chevron_left_black_24dp, context.theme)
-        buttonTint = context.resources.getColor(android.R.color.transparent)
-        viewBackground = context.resources.getDrawable(R.color.color_primary, context.theme)
+        incIcon = resources.getDrawable(R.drawable.ic_chevron_right_black_24dp, context.theme)
+        decIcon = resources.getDrawable(R.drawable.ic_chevron_left_black_24dp, context.theme)
+        buttonTint = resources.getColor(android.R.color.transparent)
+        viewBackground = resources.getDrawable(R.color.color_primary, context.theme)
     }
 
     private fun applyAttributes(rawAttrs: AttributeSet?, defStyle: Int) {
@@ -95,7 +93,8 @@ class HorizontalNumberPicker @JvmOverloads constructor(
             buttonTint = a.getColor(R.styleable.HorizontalNumberPicker_hnp_buttonTint, 0)
             borderColor = a.getColor(R.styleable.HorizontalNumberPicker_hnp_borderColor, 0)
             borderWidth = a.getDimension(R.styleable.HorizontalNumberPicker_hnp_borderWidth, -1f)
-            textSize = a.getDimension(R.styleable.HorizontalNumberPicker_hnp_textSize, defaultTextSize)
+            dividerWidth = a.getDimension(R.styleable.HorizontalNumberPicker_hnp_dividerWidth, -1f)
+            textSize = a.getDimensionPixelSize(R.styleable.HorizontalNumberPicker_hnp_textSize, defaultTextSize)
             cornerRadius = a.getDimension(R.styleable.HorizontalNumberPicker_hnp_cornerRadius, -1f)
             value = a.getInt(R.styleable.HorizontalNumberPicker_hnp_value, 1)
             increment = a.getInt(R.styleable.HorizontalNumberPicker_hnp_increment, 1)
@@ -110,31 +109,15 @@ class HorizontalNumberPicker @JvmOverloads constructor(
     }
 
     private fun applyListeners() {
-        //btn_inc.setOnClickListener {
-        //    counterValue = et_value.text.toString().split(' ').first().toFloatOrNull() ?: counterValue
-        //    val old = counterValue
-        //    counterValue += incDecViewIncrement
-        //    context.hideKeyboard(et_value)
-        //    et_value.clearFocus()
-        //    refreshCounter()
-        //    onValueChangedListener?.onValueChange(this, old, counterValue)
-        //}
 
         btn_inc.setOnHoldListener(repeatIntervalMillis, 400L, {
             onValueChangedListener?.onValueChange(this, value)
+            et_value.clearFocus()
         }) { updateCounter(increment) }
 
-        //btn_dec.setOnClickListener {
-        //    counterValue = et_value.text.toString().split(' ').first().toFloatOrNull() ?: counterValue
-        //    val old = counterValue
-        //    counterValue -= incDecViewIncrement
-        //    context.hideKeyboard(et_value)
-        //    et_value.clearFocus()
-        //    refreshCounter()
-        //    onValueChangedListener?.onValueChange(this, old, counterValue)
-        //}
         btn_dec.setOnHoldListener(repeatIntervalMillis, 400L, {
             onValueChangedListener?.onValueChange(this, value)
+            et_value.clearFocus()
         }) { updateCounter(-increment) }
 
         //et_value.addTextChangedListener {
@@ -163,8 +146,9 @@ class HorizontalNumberPicker @JvmOverloads constructor(
             } else false
         }
 
-        et_value.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) et_value.setText("$value")
+        et_value.setOnFocusChangeListener { v, hasFocus ->
+            Log.d("TAG_HNP", "isFocused: $hasFocus")
+            if (hasFocus) (v as EditText).setText("$value")
             else {
                 updateCounter()
                 onValueChangedListener?.onValueChange(this, value)
@@ -173,6 +157,8 @@ class HorizontalNumberPicker @JvmOverloads constructor(
     }
 
     private fun applyValues() {
+        et_value.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize.toFloat())
+        requestLayout()
         if (incIcon != null) btn_inc.setImageDrawable(incIcon)
         if (decIcon != null) btn_dec.setImageDrawable(decIcon)
         if (viewBackground != null) root_view.background = viewBackground
@@ -180,17 +166,22 @@ class HorizontalNumberPicker @JvmOverloads constructor(
             btn_inc.imageTintList = ColorStateList.valueOf(buttonTint)
             btn_dec.imageTintList = ColorStateList.valueOf(buttonTint)
         }
+
+        //TODO make borderBuilder?
         if (borderWidth != -1f) applyBorder(width = borderWidth)
         if (borderColor != 0) applyBorder(color = borderColor)
+        if (cornerRadius != 0f) applyBorder(radius = cornerRadius)
+        if (dividerWidth != -1f) setSelectionDividerWidth(dividerWidth)
+
         if (valueColor != 0) et_value.setTextColor(valueColor)
         updateUi()
     }
 
     private fun updateCounter(append: Int = 0) {
+        Log.d("TAG_HNP", "val updating")
         value = et_value.text.toString().toIntOrNull() ?: value
         value += append
         context.hideKeyboard(et_value)
-        et_value.clearFocus()
         updateUi()
     }
 
@@ -268,6 +259,7 @@ class HorizontalNumberPicker @JvmOverloads constructor(
     fun setBorderColor(@ColorInt color: Int) {
         borderColor = color
         applyBorder(color = color)
+        if (dividerWidth != -1f) setSelectionDividerWidth(dividerWidth)
     }
 
 
@@ -276,20 +268,9 @@ class HorizontalNumberPicker @JvmOverloads constructor(
         width: Float = borderWidth,
         radius: Float = cornerRadius
     ) {
-
-        val newColor = if (color != 0) color else resources.getColor(android.R.color.darker_gray)
-        val newWidth = if (width != -1f) width.toInt() else getDimension(R.dimen.hnp_stroke_width).toInt()
-        val newRadius = if (width != -1f) radius else getDimension(R.dimen.hnp_corner_radius)
-
-        with (divider_left) {
-            layoutParams = layoutParams.apply { this.width = newWidth }
-            setBackgroundColor(newColor)
-        }
-
-        with (divider_right) {
-            layoutParams = layoutParams.apply { this.width = newWidth }
-            setBackgroundColor(newColor)
-        }
+        val newColor = if (color != 0) color else defaultBorderColor
+        val newWidth = if (width != -1f) width.toInt() else defaultBorderWidth
+        val newRadius = if (width != -1f) radius else defaultCornerRadius
 
         root_view?.background = GradientDrawable().apply {
             cornerRadius = newRadius
@@ -356,12 +337,24 @@ class HorizontalNumberPicker @JvmOverloads constructor(
     }
 
 
-    fun setSelectionDividerWidth(height: Int) {
-        throw RuntimeException("Stub!")
+    fun setSelectionDividerWidth(width: Float) {
+        dividerWidth = width
+        val color = if (borderColor != 0) borderColor else defaultBorderColor
+        with (divider_left) {
+            layoutParams = layoutParams.apply { this.width = width.toInt() }
+            setBackgroundColor(color)
+        }
+
+        with (divider_right) {
+            layoutParams = layoutParams.apply { this.width = width.toInt() }
+            setBackgroundColor(color)
+        }
+        requestLayout()
+        invalidate()
     }
 
-    fun getSelectionDividerWidth(): Int {
-        throw RuntimeException("Stub!")
+    fun getSelectionDividerWidth(): Float {
+        return dividerWidth
     }
 
     fun setTextColor(@ColorInt color: Int) {
@@ -381,8 +374,14 @@ class HorizontalNumberPicker @JvmOverloads constructor(
         return valueColor
     }
 
-    fun setTextSize(type: Int, size: Float) {
+    fun setTextSize(size: Float) {
+        et_value.setTextSize(TypedValue.COMPLEX_UNIT_SP, size)
+        //textSize = et_value.textSize
+        requestLayout()
+    }
 
+    fun getTextSize(): Float {
+        return et_value.textSize
     }
 
 
@@ -416,6 +415,7 @@ class HorizontalNumberPicker @JvmOverloads constructor(
 
     interface OnValueChangeListener {
 
+        @CallSuper
         fun onValueChange(view: HorizontalNumberPicker, oldValue: Int, newValue: Int) {
             onValueChange(view, newValue)
         }

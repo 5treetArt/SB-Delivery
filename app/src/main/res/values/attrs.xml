@@ -6,13 +6,14 @@
         <attr name="hnp_backgroundColor" format="reference|color"/>
         <attr name="hnp_buttonTint" format="reference|color"/>
         <attr name="hnp_borderWidth" format="reference|dimension"/>
+        <attr name="hnp_dividerWidth" format="reference|dimension"/>
         <attr name="hnp_cornerRadius" format="reference|dimension"/>
         <attr name="hnp_textSize" format="reference|dimension"/>
         <attr name="hnp_borderColor" format="reference|color"/>
-        <attr name="hnp_value" format="reference|float"/>
-        <attr name="hnp_increment" format="reference|float"/>
+        <attr name="hnp_value" format="reference|integer"/>
+        <attr name="hnp_increment" format="integer|integer"/>
         <attr name="hnp_textColor" format="reference|color"/>
-        <attr name="hnp_minValue" format="reference|float"/>
-        <attr name="hnp_maxValue" format="reference|float"/>
+        <attr name="hnp_minValue" format="reference|integer"/>
+        <attr name="hnp_maxValue" format="reference|integer"/>
     </declare-styleable>
 </resources>
