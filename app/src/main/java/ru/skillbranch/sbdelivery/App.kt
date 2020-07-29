@@ -2,6 +2,7 @@ package ru.skillbranch.sbdelivery
 
 import android.app.Application
 import android.content.Context
+import com.facebook.stetho.Stetho
 
 class App : Application() {
 
@@ -21,5 +22,7 @@ class App : Application() {
         super.onCreate()
 
         //TODO set default Night Mode
+
+        Stetho.initializeWithDefaults(this)
     }
 }
