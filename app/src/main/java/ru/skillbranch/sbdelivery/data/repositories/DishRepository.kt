@@ -85,6 +85,22 @@ object MockDishRepository : IDishRepository {
     override fun findDishCommentCount(dishId: String): LiveData<Int> {
         return network.reviewsData.getOrPut(dishId) { MutableLiveData(emptyList()) }.map { it.size }
     }
+
+    suspend fun loadReviewsFromNetwork(
+        position: Int,
+        size: Int,
+        dishId: String
+    ): List<ReviewItemData> {
+        return network.reviewsData
+            .getOrElse(dishId) { MutableLiveData(emptyList()) }
+            .value!!
+            .drop(position)
+            .take(size)
+    }
+
+    suspend fun insertReviewsToDb(items: List<ReviewItemData>) {
+
+    }
 }
 
 class ReviewsDataFactory(

@@ -15,6 +15,7 @@ import ru.skillbranch.sbdelivery.R
 import ru.skillbranch.sbdelivery.data.repositories.MockDishRepository
 import ru.skillbranch.sbdelivery.extensions.attrValue
 import ru.skillbranch.sbdelivery.extensions.dpToPx
+import ru.skillbranch.sbdelivery.extensions.format
 import ru.skillbranch.sbdelivery.ui.base.BaseFragment
 import ru.skillbranch.sbdelivery.ui.base.Binding
 import ru.skillbranch.sbdelivery.ui.base.ToolbarBuilder
@@ -86,7 +87,7 @@ class DishFragment : BaseFragment<DishViewModel>() {
                 .into(iv_poster)
         }
 
-        tv_sale.isVisible = args.isOnSale
+        tv_sale.isVisible = args.oldPrice != null
 
         btn_like.setOnClickListener {
             viewModel.handleLike()
@@ -104,14 +105,13 @@ class DishFragment : BaseFragment<DishViewModel>() {
             }
         })
 
-
         btn_add.setOnClickListener {
-            //
+            viewModel.handleAdd()
         }
 
         tv_rating.setText(buildSpannedString {
             inSpans(LeftDrawableSpan(starIcon, gap, colorSurface)) {
-                append("${args.rating}/5")
+                append("${args.rating?.format()}/5")
             }
         }, TextView.BufferType.SPANNABLE)
 

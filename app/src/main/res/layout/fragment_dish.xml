@@ -43,7 +43,7 @@
             android:id="@+id/btn_like"
             style="@style/CheckableIcon"
             android:layout_marginTop="@dimen/spacing_small_8"
-            android:src="@drawable/like_states"
+            android:src="@drawable/ic_favorite_black_24dp"
             app:layout_constraintEnd_toEndOf="@id/iv_poster"
             app:layout_constraintTop_toTopOf="@id/iv_poster" />
 

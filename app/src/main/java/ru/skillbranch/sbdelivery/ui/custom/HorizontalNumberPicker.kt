@@ -2,6 +2,7 @@ package ru.skillbranch.sbdelivery.ui.custom
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Parcel
@@ -16,11 +17,13 @@ import androidx.annotation.CallSuper
 import androidx.annotation.ColorInt
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
+import androidx.core.graphics.alpha
 import kotlinx.android.synthetic.main.layout_counter_view.view.*
 import ru.skillbranch.sbdelivery.R
 import ru.skillbranch.sbdelivery.extensions.hideKeyboard
 import ru.skillbranch.sbdelivery.extensions.setOnHoldListener
 import ru.skillbranch.sbdelivery.extensions.setTextIfDifferent
+import kotlin.math.min
 
 
 class HorizontalNumberPicker @JvmOverloads constructor(
@@ -262,6 +265,22 @@ class HorizontalNumberPicker @JvmOverloads constructor(
         if (dividerWidth != -1f) setSelectionDividerWidth(dividerWidth)
     }
 
+    override fun onDraw(canvas: Canvas?) {
+        super.onDraw(canvas)
+
+        /*        btn_dec.background = GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadii = floatArrayOf(
+                newRadius, newRadius, //Top left radius in px
+                0f, 0f,         //Top right radius in px
+                0f, 0f,         //Bottom right radius in px
+                newRadius, newRadius  //Bottom left radius in px
+            )
+            //cornerRadius = newRadius
+            setStroke(newWidth, newColor)
+        }*/
+
+    }
 
     private fun applyBorder(
         @ColorInt color: Int = borderColor,
@@ -284,6 +303,8 @@ class HorizontalNumberPicker @JvmOverloads constructor(
         if (value < minValue) value = minValue
         if (value > maxValue) value = maxValue
 
+        if (value == minValue) btn_dec.imageTintList = ColorStateList.valueOf(buttonTint).withAlpha(buttonTint.alpha / 2)
+        else btn_dec.imageTintList = ColorStateList.valueOf(buttonTint)
         val text = formatter?.format(value) ?: "$value"
         et_value.setTextIfDifferent(text)
         //    String.format(

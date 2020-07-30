@@ -15,6 +15,5 @@ data class DishFull(
     val commentsCount: Int = 0,
     val createdAt: Date,
     val updatedAt: Date,
-    val isLike: Boolean = false,
-    val isOnSale: Boolean = false
+    val isLike: Boolean = false
 )

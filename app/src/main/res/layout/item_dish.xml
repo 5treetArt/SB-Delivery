@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="6dp"
+    app:cardElevation="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:background="?attr/colorPrimary">
+
+        <ImageView
+            android:id="@+id/iv_poster"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tv_price"
+            tools:src="@drawable/ic_launcher_background" />
+
+        <TextView
+            android:id="@+id/tv_sale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small_8"
+            android:background="@drawable/bg_sale"
+            android:fontFamily="sans-serif-medium"
+            android:paddingStart="@dimen/spacing_normal_16"
+            android:paddingTop="@dimen/spacing_tiny_4"
+            android:paddingEnd="@dimen/spacing_normal_16"
+            android:paddingBottom="@dimen/spacing_tiny_4"
+            android:text="АКЦИЯ"
+            android:textColor="@color/color_background"
+            android:textSize="@dimen/font_tiny_10"
+            app:layout_constraintStart_toStartOf="@id/iv_poster"
+            app:layout_constraintTop_toTopOf="@id/iv_poster" />
+
+        <ru.skillbranch.sbdelivery.ui.custom.CheckableImageView
+            android:id="@+id/btn_like"
+            style="@style/CheckableIconSmall"
+            android:src="@drawable/ic_favorite_black_24dp"
+            app:layout_constraintEnd_toEndOf="@id/iv_poster"
+            app:layout_constraintTop_toTopOf="@id/iv_poster" />
+
+        <TextView
+            android:id="@+id/tv_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_small_8"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/color_surface"
+            android:textSize="@dimen/font_medium_14"
+            app:layout_constraintTop_toBottomOf="@id/iv_poster"
+            app:layout_constraintBottom_toTopOf="@id/tv_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="680 ₽" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_small_8"
+            android:layout_marginBottom="@dimen/spacing_normal_16"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/color_on_surface"
+            android:textSize="@dimen/font_medium_14"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_price"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Пицца Маргарита" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fabCustomSize="@dimen/btn_round_size_40"
+            app:backgroundTint="?attr/colorSurface"
+            app:layout_constraintTop_toBottomOf="@id/iv_poster"
+            app:layout_constraintBottom_toBottomOf="@id/iv_poster"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginRight="@dimen/spacing_small_8"
+            app:srcCompat="@drawable/ic_add_black_24dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
