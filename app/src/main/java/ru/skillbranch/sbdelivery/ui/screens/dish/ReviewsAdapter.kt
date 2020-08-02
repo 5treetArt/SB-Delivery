@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_dish_review.*
 import ru.skillbranch.sbdelivery.R
-import ru.skillbranch.sbdelivery.data.models.ReviewItemData
+import ru.skillbranch.sbdelivery.data.local.entities.Review
 import ru.skillbranch.sbdelivery.extensions.format
 
-class ReviewsAdapter: ListAdapter<ReviewItemData, ReviewVH>(callback) {
+class ReviewsAdapter: ListAdapter<Review, ReviewVH>(callback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewVH {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_dish_review, parent, false)
@@ -26,7 +26,7 @@ class ReviewsAdapter: ListAdapter<ReviewItemData, ReviewVH>(callback) {
 class ReviewVH(override val containerView: View) :
     RecyclerView.ViewHolder(containerView), LayoutContainer {
 
-    fun bind(data: ReviewItemData) {
+    fun bind(data: Review) {
         tv_name_date.text = "${data.author}, ${data.date.format("dd.MM.yy")}"
         rating.rating = data.rating.toFloat()
         rating.numStars = data.rating
@@ -37,10 +37,10 @@ class ReviewVH(override val containerView: View) :
     }
 }
 
-private val callback = object : DiffUtil.ItemCallback<ReviewItemData>() {
-    override fun areItemsTheSame(oldItem: ReviewItemData, newItem: ReviewItemData) =
+private val callback = object : DiffUtil.ItemCallback<Review>() {
+    override fun areItemsTheSame(oldItem: Review, newItem: Review) =
         oldItem.date == newItem.date
 
-    override fun areContentsTheSame(oldItem: ReviewItemData, newItem: ReviewItemData) =
+    override fun areContentsTheSame(oldItem: Review, newItem: Review) =
         oldItem == newItem
 }

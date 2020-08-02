@@ -5,8 +5,7 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import ru.skillbranch.sbdelivery.data.models.ReviewItemData
+import ru.skillbranch.sbdelivery.data.local.entities.Review
 import ru.skillbranch.sbdelivery.data.repositories.MockDishRepository
 import ru.skillbranch.sbdelivery.data.repositories.ReviewsDataFactory
 import ru.skillbranch.sbdelivery.viewmodels.base.BaseViewModel
@@ -32,26 +31,26 @@ class DishViewModel(handle: SavedStateHandle, private val dishId: String) :
         }
     }
 
-    private val listData: LiveData<PagedList<ReviewItemData>> =
+    private val listData: LiveData<PagedList<Review>> =
         Transformations.switchMap(repository.findDishCommentCount(dishId)) {
             buildPagedList(repository.allReviews(dishId, it))
         }
 
     fun observeList(
         owner: LifecycleOwner,
-        onChanged: (list: PagedList<ReviewItemData>) -> Unit
+        onChanged: (list: PagedList<Review>) -> Unit
     ) {
         listData.observe(owner, Observer { onChanged(it) })
     }
 
-    private fun buildPagedList(dataFactory: ReviewsDataFactory): LiveData<PagedList<ReviewItemData>> {
-        return LivePagedListBuilder<Int, ReviewItemData>(dataFactory, listConfig)
+    private fun buildPagedList(dataFactory: ReviewsDataFactory): LiveData<PagedList<Review>> {
+        return LivePagedListBuilder<Int, Review>(dataFactory, listConfig)
             .setFetchExecutor(Executors.newSingleThreadExecutor())
             .setBoundaryCallback(ReviewsBoundaryCallback(::zeroLoadingHandle, ::itemAtEndLoadingHandle))
             .build()
     }
 
-    private fun itemAtEndLoadingHandle(lastLoadReview: ReviewItemData) {
+    private fun itemAtEndLoadingHandle(lastLoadReview: Review) {
         viewModelScope.launch(Dispatchers.IO) {
             val items = repository.loadReviewsFromNetwork(
                 position = listData.value?.positionOffset ?: 0,
@@ -109,15 +108,15 @@ data class DishState(
 
 class ReviewsBoundaryCallback(
     private val zeroLoadingHandle: () -> Unit,
-    private val itemAtEndHandle: (ReviewItemData) -> Unit
+    private val itemAtEndHandle: (Review) -> Unit
 
-) : PagedList.BoundaryCallback<ReviewItemData>() {
+) : PagedList.BoundaryCallback<Review>() {
     override fun onZeroItemsLoaded() {
         //Storage is empty
         zeroLoadingHandle()
     }
 
-    override fun onItemAtEndLoaded(itemAtEnd: ReviewItemData) {
+    override fun onItemAtEndLoaded(itemAtEnd: Review) {
         //user scroll down -> need load more items
         itemAtEndHandle(itemAtEnd)
     }

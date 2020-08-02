@@ -6,13 +6,13 @@ import androidx.lifecycle.map
 import androidx.paging.DataSource
 import androidx.paging.PositionalDataSource
 import ru.skillbranch.sbdelivery.data.local.entities.DishFull
-import ru.skillbranch.sbdelivery.data.models.ReviewItemData
+import ru.skillbranch.sbdelivery.data.local.entities.Review
 import java.util.*
 
 interface IDishRepository {
     fun findDish(dishId: String): LiveData<DishFull>
     fun isAuth(): LiveData<Boolean>
-    fun loadReviewsByRange(position: Int, size: Int, dishId: String): List<ReviewItemData>
+    fun loadReviewsByRange(position: Int, size: Int, dishId: String): List<Review>
     fun sendReview(dishId: String, name: String, date: Date, rating: Int, text: String?)
     fun allReviews(dishId: String, totalCount: Int): ReviewsDataFactory
     fun toggleLike(dishId: String)
@@ -28,7 +28,7 @@ object MockDishRepository : IDishRepository {
                 id = "5ed8da011f071c00465b2026",
                 name = "Бургер \"Америка\"",
                 description = "320 г • Котлета из 100% говядины (прожарка medium) на гриле, картофельная булочка на гриле, фирменный соус, лист салата, томат, маринованный лук, жареный бекон, сыр чеддер.",
-                poster = "https://www.delivery-club.ru/media/cms/relation_product/32350/312372888_m200.jpg",
+                poster = "https://www.delivery-club.ru/media/cms/relation_product/32350/312372888_m650.jpg",
                 oldPrice = "259",
                 price = 170,
                 rating = 3.8f,
@@ -51,7 +51,7 @@ object MockDishRepository : IDishRepository {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun loadReviewsByRange(position: Int, size: Int, dishId: String): List<ReviewItemData> {
+    override fun loadReviewsByRange(position: Int, size: Int, dishId: String): List<Review> {
         return network.reviewsData
             .getOrElse(dishId) { MutableLiveData(emptyList()) }
             .value!!
@@ -90,7 +90,7 @@ object MockDishRepository : IDishRepository {
         position: Int,
         size: Int,
         dishId: String
-    ): List<ReviewItemData> {
+    ): List<Review> {
         return network.reviewsData
             .getOrElse(dishId) { MutableLiveData(emptyList()) }
             .value!!
@@ -98,32 +98,32 @@ object MockDishRepository : IDishRepository {
             .take(size)
     }
 
-    suspend fun insertReviewsToDb(items: List<ReviewItemData>) {
+    suspend fun insertReviewsToDb(items: List<Review>) {
 
     }
 }
 
 class ReviewsDataFactory(
-    private val itemProvider: (Int, Int, String) -> List<ReviewItemData>,
+    private val itemProvider: (Int, Int, String) -> List<Review>,
     private val dishId: String,
     private val totalCount: Int
-) : DataSource.Factory<Int, ReviewItemData>() {
-    override fun create(): DataSource<Int, ReviewItemData> = ReviewsDataSource(itemProvider, dishId, totalCount)
+) : DataSource.Factory<Int, Review>() {
+    override fun create(): DataSource<Int, Review> = ReviewsDataSource(itemProvider, dishId, totalCount)
 }
 
 class ReviewsDataSource(
-    private val itemProvider: (Int, Int, String) -> List<ReviewItemData>,
+    private val itemProvider: (Int, Int, String) -> List<Review>,
     private val dishId: String,
     private val totalCount: Int
-) : PositionalDataSource<ReviewItemData>() {
-    override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<ReviewItemData>) {
+) : PositionalDataSource<Review>() {
+    override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<Review>) {
         val result = itemProvider(params.startPosition, params.loadSize, dishId)
         callback.onResult(result)
     }
 
     override fun loadInitial(
         params: LoadInitialParams,
-        callback: LoadInitialCallback<ReviewItemData>
+        callback: LoadInitialCallback<Review>
     ) {
         val result = itemProvider(params.requestedStartPosition, params.requestedLoadSize, dishId)
         callback.onResult(result, params.requestedStartPosition, totalCount)
