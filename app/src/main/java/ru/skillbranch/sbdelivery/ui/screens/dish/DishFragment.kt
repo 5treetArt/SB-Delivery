@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import kotlinx.android.synthetic.main.fragment_dish.*
+import org.w3c.dom.Text
 import ru.skillbranch.sbdelivery.R
 import ru.skillbranch.sbdelivery.data.repositories.MockDishRepository
 import ru.skillbranch.sbdelivery.extensions.attrValue
@@ -88,16 +89,13 @@ class DishFragment : BaseFragment<DishViewModel>() {
         }
 
         tv_sale.isVisible = args.oldPrice != null
-
-        btn_like.setOnClickListener {
-            viewModel.handleLike()
-        }
-
+        btn_like.setOnClickListener { viewModel.handleLike() }
         tv_title.text = args.name
         tv_description.text = args.description
         tv_old_price.text = "${args.oldPrice} ₽"
         tv_old_price.paintFlags = tv_old_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         tv_old_price.isVisible = args.oldPrice != null
+
         tv_price.text = "${args.price} ₽"
         picker.setCounterListener(object : HorizontalNumberPicker.OnValueChangeListener {
             override fun onValueChange(view: HorizontalNumberPicker, newValue: Int) {
@@ -105,9 +103,11 @@ class DishFragment : BaseFragment<DishViewModel>() {
             }
         })
 
-        btn_add.setOnClickListener {
-            viewModel.handleAdd()
-        }
+        btn_add.setOnClickListener { viewModel.handleAdd() }
+
+        //TODO
+        //tv_rating.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_star_24dp_fill_insets, 0,0,0)
+        //tv_rating.text = "${args.rating?.format()}/5"
 
         tv_rating.setText(buildSpannedString {
             inSpans(LeftDrawableSpan(starIcon, gap, colorSurface)) {

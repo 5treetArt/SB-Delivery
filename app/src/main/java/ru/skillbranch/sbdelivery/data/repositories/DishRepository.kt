@@ -32,11 +32,9 @@ object MockDishRepository : IDishRepository {
                 oldPrice = "259",
                 price = 170,
                 rating = 3.8f,
-                likes = 1,
-                category = "5ed8da011f071c00465b1fde",
-                commentsCount = 5,
-                createdAt = Date(1591269889000),
-                updatedAt = Date(1595846770000)
+                likesCount = 1,
+                categoryId = "5ed8da011f071c00465b1fde",
+                commentsCount = 5
             )
         )
     )

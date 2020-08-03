@@ -11,6 +11,7 @@ object MockNetworkDataHolder {
             listOf(
                 Review(
                     dishId = "5ed8da011f071c00465b2026",
+                    order = 0,
                     author = "Иван Ильич",
                     date = "2020-07-16T07:50:39.555Z".toDate("yyyy-MM-dd'T'HH:mm:ss.SSSZ")!!,
                     rating = 4,
@@ -20,6 +21,7 @@ object MockNetworkDataHolder {
                 ),
                 Review(
                     dishId = "5ed8da011f071c00465b2026",
+                    order = 1,
                     author = "Иван Ильич",
                     date = "2020-07-16T19:21:31.463Z".toDate("yyyy-MM-dd'T'HH:mm:ss.SSSZ")!!,
                     rating = 1,
@@ -29,6 +31,7 @@ object MockNetworkDataHolder {
                 ),
                 Review(
                     dishId = "5ed8da011f071c00465b2026",
+                    order = 2,
                     author = "Иван Петров",
                     date = "2020-07-24T11:00:41.741Z".toDate("yyyy-MM-dd'T'HH:mm:ss.SSSZ")!!,
                     rating = 4,
@@ -38,6 +41,7 @@ object MockNetworkDataHolder {
                 ),
                 Review(
                     dishId = "5ed8da011f071c00465b2026",
+                    order = 3,
                     author = "Леша Кабанов",
                     date = "2020-07-24T11:01:39.888Z".toDate("yyyy-MM-dd'T'HH:mm:ss.SSSZ")!!,
                     rating = 5,
@@ -47,6 +51,7 @@ object MockNetworkDataHolder {
                 ),
                 Review(
                     dishId = "5ed8da011f071c00465b2026",
+                    order = 4,
                     author = "Леша Кабанов",
                     date = "2020-07-27T10:46:10.374Z".toDate("yyyy-MM-dd'T'HH:mm:ss.SSSZ")!!,
                     rating = 5,
@@ -63,6 +68,7 @@ object MockNetworkDataHolder {
 
         liveData.value = liveData.value!! + Review(
             dishId = dishId,
+            order = liveData.value!!.size,
             author = name,
             date = date,
             rating = rating,

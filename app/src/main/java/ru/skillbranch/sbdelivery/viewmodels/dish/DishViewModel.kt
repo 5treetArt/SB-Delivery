@@ -53,7 +53,7 @@ class DishViewModel(handle: SavedStateHandle, private val dishId: String) :
     private fun itemAtEndLoadingHandle(lastLoadReview: Review) {
         viewModelScope.launch(Dispatchers.IO) {
             val items = repository.loadReviewsFromNetwork(
-                position = listData.value?.positionOffset ?: 0,
+                position = lastLoadReview.order + 1,
                 size = listConfig.pageSize,
                 dishId = dishId
             )

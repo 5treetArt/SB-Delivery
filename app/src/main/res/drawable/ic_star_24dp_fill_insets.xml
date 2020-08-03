@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_star_24dp_fill"
+    android:insetBottom="@dimen/spacing_small_8"
+    android:insetTop="@dimen/spacing_small_8"
+    android:insetLeft="@dimen/spacing_small_8"
+    android:insetRight="8dp">
+</inset>
