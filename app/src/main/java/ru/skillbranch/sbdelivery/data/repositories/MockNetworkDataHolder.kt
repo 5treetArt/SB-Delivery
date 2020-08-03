@@ -2,14 +2,15 @@ package ru.skillbranch.sbdelivery.data.repositories
 
 import androidx.lifecycle.MutableLiveData
 import ru.skillbranch.sbdelivery.data.local.entities.Review
+import ru.skillbranch.sbdelivery.data.remote.res.ReviewRes
 import ru.skillbranch.sbdelivery.extensions.toDate
 import java.util.*
 
 object MockNetworkDataHolder {
-    val reviewsData: MutableMap<String, MutableLiveData<List<Review>>> = mutableMapOf(
+    val reviewsData: MutableMap<String, MutableLiveData<List<ReviewRes>>> = mutableMapOf(
         "5ed8da011f071c00465b2026" to MutableLiveData(
             listOf(
-                Review(
+                ReviewRes(
                     dishId = "5ed8da011f071c00465b2026",
                     order = 0,
                     author = "Иван Ильич",
@@ -19,7 +20,7 @@ object MockNetworkDataHolder {
                     createdAt = Date(1594885839000),
                     updatedAt = Date(1594885839000)
                 ),
-                Review(
+                ReviewRes(
                     dishId = "5ed8da011f071c00465b2026",
                     order = 1,
                     author = "Иван Ильич",
@@ -29,7 +30,7 @@ object MockNetworkDataHolder {
                     createdAt = Date(1594927291000),
                     updatedAt = Date(1594927291000)
                 ),
-                Review(
+                ReviewRes(
                     dishId = "5ed8da011f071c00465b2026",
                     order = 2,
                     author = "Иван Петров",
@@ -39,7 +40,7 @@ object MockNetworkDataHolder {
                     createdAt = Date(1595588441000),
                     updatedAt = Date(1595588441000)
                 ),
-                Review(
+                ReviewRes(
                     dishId = "5ed8da011f071c00465b2026",
                     order = 3,
                     author = "Леша Кабанов",
@@ -49,7 +50,7 @@ object MockNetworkDataHolder {
                     createdAt = Date(1595588499000),
                     updatedAt = Date(1595588499000)
                 ),
-                Review(
+                ReviewRes(
                     dishId = "5ed8da011f071c00465b2026",
                     order = 4,
                     author = "Леша Кабанов",
@@ -66,7 +67,7 @@ object MockNetworkDataHolder {
     fun sendReview(dishId: String, name: String, date: Date, rating: Int, text: String?) {
         val liveData = reviewsData.getOrPut(dishId) { MutableLiveData(emptyList()) }
 
-        liveData.value = liveData.value!! + Review(
+        liveData.value = liveData.value!! + ReviewRes(
             dishId = dishId,
             order = liveData.value!!.size,
             author = name,

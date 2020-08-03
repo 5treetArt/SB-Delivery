@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.paging.DataSource
 import androidx.paging.PositionalDataSource
+import ru.skillbranch.sbdelivery.data.local.DbManager.db
 import ru.skillbranch.sbdelivery.data.local.entities.DishFull
 import ru.skillbranch.sbdelivery.data.local.entities.Review
+import ru.skillbranch.sbdelivery.data.remote.res.ReviewRes
 import java.util.*
 
 interface IDishRepository {
@@ -41,12 +43,30 @@ object MockDishRepository : IDishRepository {
 
     private val network = MockNetworkDataHolder
 
+    private val reviewsDao = db.reviewsDao()
+
     override fun findDish(dishId: String): LiveData<DishFull> {
         return dishes[0]
     }
 
     override fun isAuth(): LiveData<Boolean> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    suspend fun loadReviewsFromNetwork(
+        position: Int,
+        size: Int,
+        dishId: String
+    ): List<ReviewRes> {
+        return network.reviewsData
+            .getOrElse(dishId) { MutableLiveData(emptyList()) }
+            .value!!
+            .drop(position)
+            .take(size)
+    }
+
+    suspend fun insertReviewsToDb(items: List<Review>) {
+
     }
 
     override fun loadReviewsByRange(position: Int, size: Int, dishId: String): List<Review> {
@@ -61,8 +81,6 @@ object MockDishRepository : IDishRepository {
         network.sendReview(dishId, name, date, rating, text)
         //TODO UPDATE local reviews
     }
-
-
 
     override fun allReviews(dishId: String, totalCount: Int) = ReviewsDataFactory(
         itemProvider = ::loadReviewsByRange,
@@ -82,22 +100,6 @@ object MockDishRepository : IDishRepository {
 
     override fun findDishCommentCount(dishId: String): LiveData<Int> {
         return network.reviewsData.getOrPut(dishId) { MutableLiveData(emptyList()) }.map { it.size }
-    }
-
-    suspend fun loadReviewsFromNetwork(
-        position: Int,
-        size: Int,
-        dishId: String
-    ): List<Review> {
-        return network.reviewsData
-            .getOrElse(dishId) { MutableLiveData(emptyList()) }
-            .value!!
-            .drop(position)
-            .take(size)
-    }
-
-    suspend fun insertReviewsToDb(items: List<Review>) {
-
     }
 }
 
